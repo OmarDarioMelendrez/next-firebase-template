@@ -1,25 +1,26 @@
-'use client'
+"use client";
+import React, { useEffect, useState } from "react";
 import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
-function Page(): JSX.Element {
-  // Access the user object from the authentication context
-  // const { user } = useAuthContext();
-  const { user } = useAuthContext() as { user: any }; // Use 'as' to assert the type as { user: any }
+function Page(): React.ReactElement {
+  const { user } = useAuthContext() as { user: any };
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect( () => {
-    // Redirect to the home page if the user is not logged in
-    if ( user == null ) {
-      router.push( "/" );
+  useEffect(() => {
+    if (user === null) {
+      router.push("/");
+    } else {
+      setIsLoading(false);
     }
-    // }, [ user ] );
-  }, [ user, router ] ); // Include 'router' in the dependency array to resolve eslint warning
+  }, [user, router]);
 
-  return (
-    <h1>Only logged-in users can view this page</h1>
-  );
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return <h1>Only logged-in users can view this page</h1>;
 }
 
 export default Page;
